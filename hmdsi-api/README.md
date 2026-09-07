@@ -287,12 +287,24 @@ Server berjalan di `http://localhost:8000`.
 
 ## 🔐 API Authentication (Sanctum)
 
+### Super Admin Default Credentials
+
+> **PENTING:** Jalankan `php artisan db:seed` untuk membuat akun super admin.
+
+| Field | Value |
+|-------|-------|
+| Email | `superadmin@hmdsi.or.id` |
+| Password | `HMDSI@2026Super` |
+| Role | `super_admin` |
+
+⚠️ **Ganti password default segera setelah deployment pertama!**
+
 ### Login (dapatkan token)
 
 ```bash
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"superadmin@hmdsi.org","password":"password"}'
+  -d '{"email":"superadmin@hmdsi.or.id","password":"HMDSI@2026Super"}'
 ```
 
 **Response:**
@@ -301,7 +313,7 @@ curl -X POST http://localhost:8000/api/auth/login \
   "success": true,
   "message": "Login successful",
   "data": {
-    "user": { "id": 1, "name": "Admin", "email": "...", "role": "super_admin" },
+    "user": { "id": 1, "name": "Super Administrator", "email": "superadmin@hmdsi.or.id", "role": "super_admin" },
     "token": "1|abc123...",
     "token_type": "Bearer"
   }

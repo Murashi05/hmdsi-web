@@ -8,6 +8,11 @@ import { AuthProvider } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import StructurePage from './pages/StructurePage';
+import ProkerPage from './pages/ProkerPage';
+import NewsPage from './pages/NewsPage';
+import NewsDetailPage from './pages/NewsDetailPage';
+import GalleryPage from './pages/GalleryPage';
+import AspirationPage from './pages/AspirationPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
@@ -37,6 +42,11 @@ export default function App() {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/structure" element={<StructurePage />} />
+                      <Route path="/proker" element={<ProkerPage />} />
+                      <Route path="/news" element={<NewsPage />} />
+                      <Route path="/news/:slug" element={<NewsDetailPage />} />
+                      <Route path="/gallery" element={<GalleryPage />} />
+                      <Route path="/aspiration" element={<AspirationPage />} />
                     </Routes>
                   </main>
                   <Footer />

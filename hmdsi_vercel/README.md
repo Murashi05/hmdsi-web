@@ -1,6 +1,6 @@
 # HMDSI Frontend — React + Vite Public Website
 
-> **HMDSI** = Himpunan Mahasiswa Diploma Sistem Informasi · FIT Telkom University  
+> **HMDSI** = Himpunan Mahasiswa Diploma Sistem Informasi · FIT Telkom University
 > **Tech Stack:** React 18+ · TypeScript · Vite · TanStack Query · Tailwind CSS · Lucide React · React Router v6
 
 Frontend ini adalah **website landing page publik** untuk HMDSI. Dibangun dengan arsitektur **Feature-Based Component Structure + Service Layer Pattern** menggunakan TanStack Query (React Query) untuk state management dan data fetching. Backend API terpisah (Laravel).
@@ -23,18 +23,31 @@ Website User (Tanpa Login)
 │
 ├─ Structure (/structure) ──────────── Org Chart (Leader → Core → Department)
 │     │
-│     └─ Static data (src/data/structure.ts)
+│     └─ useManagementStructures() → GET /api/structures
 │
-└─ Future Pages
-      ├─ /news ──────────────────────── Berita & Artikel
-      │     └─ useNews() → GET /api/news
-      ├─ /gallery ──────────────────── Galeri Dokumentasi
-      │     └─ useGallery() → GET /api/gallery
-      ├─ /proker ────────────────────── Program Kerja
-      │     └─ useWorkPrograms() → GET /api/work-programs
-      └─ /aspiration ────────────────── Kotak Aspirasi
-            └─ useAspirations() → POST /api/aspirations
-
+├─ Program Kerja (/proker) ──────────── Daftar Program Kerja per Departemen
+│     │
+│     ├─ useWorkPrograms() → GET /api/work-programs
+│     ├─ Filter by status (planned, in_progress, completed, postponed, cancelled)
+│     └─ useDepartments() → GET /api/departments
+│
+├─ Berita & Artikel (/news) ─────────── Daftar berita dengan featured article
+│     │
+│     ├─ useNewsArticles() → GET /api/news
+│     ├─ Category filter (news, announcement, achievement, academic, event)
+│     └─ /news/:slug → useNewsArticle() → GET /api/news/:slug
+│
+├─ Galeri (/gallery) ────────────────── Album dokumentasi kegiatan
+│     │
+│     ├─ useGalleryEvents() → GET /api/gallery
+│     └─ /gallery → Modal viewer + lightbox dengan useGalleryEvent()
+│
+├─ Kotak Aspirasi (/aspiration) ─────── Form kirim & lacak aspirasi
+│     │
+│     ├─ Tab 1: Kirim ──── useSubmitAspiration() → POST /api/aspirations
+│     ├─ Tab 2: Lacak ──── useTrackAspiration() → GET /api/aspirations/track/:code
+│     └─ useAspirationStats() → GET /api/aspirations/stats
+│
 Admin Panel (/admin/*)
 │
 ├─ Login (/admin/login) ────────────── Sanctum authentication
@@ -95,7 +108,7 @@ hmdsi_vercel/
 │   ├── assets/               # Static assets (fonts, images)
 │   ├── components/           # Global reusable components
 │   │   ├── Footer.tsx        # Footer with links & social media
-│   │   ├── Navbar.tsx        # Navigation bar
+│   │   ├── Navbar.tsx        # Navigation bar (public links only)
 │   │   ├── ProtectedRoute.tsx # HOC to protect admin routes
 │   │   ├── ScrollToTop.tsx   # Scroll to top on route change
 │   │   ├── SectionHeader.tsx # Reusable section header component
@@ -107,7 +120,6 @@ hmdsi_vercel/
 │   │   └── query-keys.ts     # TanStack Query key factory
 │   ├── data/                 # Static data (hardcoded)
 │   │   └── structure.ts     # Static organization structure data
-│   ├── features/             # Feature-based modules (reserved for future)
 │   ├── hooks/                # Custom React hooks (TanStack Query wrappers)
 │   │   ├── useAboutContent.ts
 │   │   ├── useAspirations.ts
@@ -119,9 +131,14 @@ hmdsi_vercel/
 │   │   ├── useSiteStats.ts
 │   │   └── useWorkPrograms.ts
 │   ├── pages/                # Page-level components (routes)
-│   │   ├── HomePage.tsx     # Landing page
-│   │   ├── AboutPage.tsx    # About page
+│   │   ├── HomePage.tsx      # Landing page
+│   │   ├── AboutPage.tsx     # About page
 │   │   ├── StructurePage.tsx # Organizational structure page
+│   │   ├── ProkerPage.tsx    # Program Kerja listing
+│   │   ├── NewsPage.tsx      # News list with featured article
+│   │   ├── NewsDetailPage.tsx # Single article view
+│   │   ├── GalleryPage.tsx   # Gallery with modal & lightbox
+│   │   ├── AspirationPage.tsx # Aspiration form + tracker
 │   │   └── admin/           # Admin CMS pages
 │   │       ├── AdminLoginPage.tsx
 │   │       ├── AdminDashboardPage.tsx
@@ -134,7 +151,6 @@ hmdsi_vercel/
 │   │       └── AdminSettingsPage.tsx
 │   ├── contexts/             # React Context
 │   │   └── AuthContext.tsx  # Authentication state management
-│   ├── features/             # Feature-based modules (reserved for future)
 │   ├── services/             # API service layer
 │   │   ├── api.types.ts      # TypeScript interfaces
 │   │   ├── index.ts          # Re-export all services
@@ -269,23 +285,23 @@ Setiap fitur memiliki 3 layer:
 │  1. Service Layer (src/services/*.service.ts)       │
 │     - Axios calls: GET, POST, PUT, DELETE           │
 │     - Type-safe params & return                     │
-│     - No business logic                             │
+│     - No business logic                              │
 └─────────────────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────┐
-│  2. Custom Hook (src/hooks/*.ts)                    │
+│  2. Custom Hook (src/hooks/*.ts)                     │
 │     - Wraps TanStack Query useQuery / useMutation  │
-│     - Query key factory integration                 │
+│     - Query key factory integration                  │
 │     - Provides loading / error / data states        │
 └─────────────────────────────────────────────────────┘
                        │
                        ▼
 ┌─────────────────────────────────────────────────────┐
-│  3. Page Component (src/pages/*.tsx)               │
-│     - Calls the custom hook                         │
-│     - Renders UI based on data                      │
-│     - No direct API calls                           │
+│  3. Page Component (src/pages/*.tsx)                 │
+│     - Calls the custom hook                          │
+│     - Renders UI based on data                        │
+│     - No direct API calls                            │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -321,12 +337,25 @@ export function useWorkPrograms(filters?: WorkProgramFilters) {
 | `/` | `HomePage` | Landing page |
 | `/about` | `AboutPage` | About us |
 | `/structure` | `StructurePage` | Org chart |
-| `/proker` | (future) | Work programs list |
-| `/proker/:slug` | (future) | Work program detail |
-| `/news` | (future) | News list |
-| `/gallery` | (future) | Gallery |
-| `/aspiration` | (future) | Aspiration form |
-| `/admin/*` | (future) | Protected admin routes |
+| `/proker` | `ProkerPage` | Program Kerja listing |
+| `/news` | `NewsPage` | Berita & Artikel list |
+| `/news/:slug` | `NewsDetailPage` | Detail artikel |
+| `/gallery` | `GalleryPage` | Galeri dokumentasi |
+| `/aspiration` | `AspirationPage` | Kotak Aspirasi |
+| `/admin/login` | `AdminLoginPage` | Login admin |
+| `/admin/*` | (Protected) | Admin panel (hanya via URL) |
+
+---
+
+## 🔐 Catatan Admin Panel
+
+- **Admin TIDAK terlihat di navbar publik** — hanya bisa diakses via URL `/admin/login`
+- Tidak ada link "Admin" atau "Dashboard" di navigasi publik
+- URL `/admin/*` redirect ke halaman login jika belum terautentikasi
+- **Super Admin default:**
+  - Email: `superadmin@hmdsi.or.id`
+  - Password: `HMDSI@2026Super`
+  - ⚠️ Ganti password segera setelah deployment!
 
 ---
 
@@ -366,6 +395,7 @@ VITE_API_URL=https://hmdsi-api.yourdomain.com/api
 - Frontend tidak menyimpan password
 - Admin routes harus dilindungi dengan `ProtectedRoute` component
 - `.env` dengan `VITE_` prefix aman di-commit
+- Admin panel disembunyikan dari navbar publik — hanya akses via URL langsung
 
 ---
 

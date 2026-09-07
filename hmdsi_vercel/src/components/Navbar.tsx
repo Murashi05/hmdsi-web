@@ -7,7 +7,10 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
   { to: '/structure', label: 'Structure' },
-  { to: '/admin', label: 'Admin', external: true },
+  { to: '/proker', label: 'Proker' },
+  { to: '/news', label: 'News' },
+  { to: '/gallery', label: 'Gallery' },
+  { to: '/aspiration', label: 'Aspiration' },
 ];
 
 const socialLinks = [
@@ -96,8 +99,6 @@ export default function Navbar() {
                 className={`px-5 py-2.5 text-xs font-sans font-bold tracking-[0.15em] uppercase transition-all duration-300 rounded-full ${
                   location.pathname === link.to
                     ? 'text-white bg-[#0200B5]/20 border border-[#0200B5]/30'
-                    : link.label === 'Admin'
-                    ? 'text-amber-400 hover:text-amber-300 hover:bg-amber-400/10'
                     : 'text-white/60 hover:text-white hover:bg-white/5'
                 }`}
               >

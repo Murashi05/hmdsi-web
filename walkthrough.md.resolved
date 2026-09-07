@@ -1,0 +1,336 @@
+# Panduan Setup Laravel Backend HMDSI (Windows)
+
+> Ikuti langkah-langkah ini secara **berurutan**. Jangan skip.
+
+---
+
+## FASE 1 — Install PHP & Composer (Gunakan Laragon)
+
+> **Mengapa Laragon?** Cara termudah install PHP + MySQL lokal di Windows tanpa ribet konfigurasi PATH. Sudah include PHP 8.x, Composer, dan MySQL sekaligus.
+
+### Langkah 1.1 — Download Laragon
+
+1. Buka browser → pergi ke: **https://laragon.org/download**
+2. Download **Laragon Full** (bukan lite) — ~170MB
+3. Install dengan klik **Next** → **Next** → **Install** (default path: `C:\laragon`)
+4. Setelah install, **jalankan Laragon** (klik ikon di desktop)
+5. Klik tombol **Start All** di Laragon
+
+### Langkah 1.2 — Buka Terminal Laragon
+
+> Terminal Laragon sudah otomatis set PATH untuk PHP & Composer
+
+1. Di jendela Laragon, klik **Terminal** (pojok kanan bawah)
+2. Sebuah terminal baru akan terbuka
+3. Verifikasi dengan perintah:
+
+```bash
+php --version
+# Output harus: PHP 8.2.x atau lebih baru
+
+composer --version
+# Output harus: Composer version 2.x.x
+```
+
+> [!IMPORTANT]
+> Gunakan **terminal Laragon** ini untuk semua perintah selanjutnya, bukan terminal VS Code atau PowerShell biasa.
+
+---
+
+## FASE 2 — Buat Laravel Project
+
+### Langkah 2.1 — Navigasi ke folder project
+
+```bash
+cd d:/hmdsi-web
+```
+
+### Langkah 2.2 — Buat Laravel project baru
+
+```bash
+composer create-project laravel/laravel hmdsi-api-fresh
+```
+
+> Ini akan membuat folder `hmdsi-api-fresh` dengan Laravel baru.
+> Proses download ±2-5 menit tergantung koneksi internet.
+
+### Langkah 2.3 — Install Laravel Sanctum
+
+```bash
+cd hmdsi-api-fresh
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+```
+
+---
+
+## FASE 3 — Salin File yang Sudah Di-generate
+
+> File migration, model, dan seeder sudah ada di `d:\hmdsi-web\hmdsi-api\`.
+> Kita perlu menyalinnya ke project Laravel baru `hmdsi-api-fresh`.
+
+### Langkah 3.1 — Salin Migrations
+
+Salin semua file dari:
+```
+d:\hmdsi-web\hmdsi-api\database\migrations\
+```
+ke:
+```
+d:\hmdsi-web\hmdsi-api-fresh\database\migrations\
+```
+
+**Cara cepat via terminal Laragon:**
+```bash
+# Dari dalam folder hmdsi-api-fresh
+cp -r ../hmdsi-api/database/migrations/*.php database/migrations/
+cp -r ../hmdsi-api/app/Models/*.php app/Models/
+cp -r ../hmdsi-api/database/seeders/*.php database/seeders/
+```
+
+### Langkah 3.2 — Hapus migration bawaan Laravel yang bentrok
+
+```bash
+# Hapus migration bawaan Laravel yang sudah ada (akan konflik dengan users kita)
+del database\migrations\0001_01_01_000000_create_users_table.php
+del database\migrations\0001_01_01_000001_create_cache_table.php
+del database\migrations\0001_01_01_000002_create_jobs_table.php
+```
+
+---
+
+## FASE 4 — Konfigurasi Database Cloud (Aiven MySQL)
+
+> [!NOTE]
+> Pilihan database cloud gratis yang direkomendasikan: **Aiven MySQL** (free tier 1 bulan, lalu $19/bulan) atau **PlanetScale** (free tier permanen) atau bisa pakai **MySQL lokal Laragon** dulu untuk development.
+
+### OPSI A: Gunakan MySQL Lokal Laragon (untuk development, paling mudah)
+
+1. Laragon sudah menyediakan MySQL. Buka **HeidiSQL** atau **Laragon → Database** 
+2. Buat database baru bernama `hmdsi_db`
+
+Edit file `.env` di `hmdsi-api-fresh`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hmdsi_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### OPSI B: Gunakan Aiven MySQL Cloud (untuk production)
+
+1. Buka https://aiven.io → Sign up gratis
+2. Klik **Create Service** → pilih **MySQL**
+3. Pilih tier **Free** → pilih region terdekat (Singapore)
+4. Tunggu hingga service status **Running**
+5. Di halaman service, klik **Connection information** dan salin:
+   - **Host**, **Port**, **User**, **Password**, **Database**
+
+Edit file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql-hmdsi-xxx.aivencloud.com
+DB_PORT=14986
+DB_DATABASE=defaultdb
+DB_USERNAME=avnadmin
+DB_PASSWORD=AVNS_xxxxxxxxxxxxx
+DB_SSL_MODE=REQUIRED
+
+# Tambahkan ini juga untuk Aiven (wajib SSL):
+MYSQL_ATTR_SSL_CA=/path/to/ca.pem
+```
+
+> [!WARNING]
+> Aiven MySQL **wajib menggunakan SSL**. Download file `ca.pem` dari halaman Connection Info Aiven, simpan di folder project, dan set path-nya di `.env`.
+
+---
+
+## FASE 5 — Konfigurasi .env Lengkap
+
+Buka file `.env` di `hmdsi-api-fresh`, sesuaikan seluruhnya:
+
+```env
+APP_NAME="HMDSI API"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+# ── Database (pilih salah satu opsi di atas) ──
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=hmdsi_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+# ── Session & Cache ──
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+CACHE_STORE=database
+
+# ── Sanctum ──
+SANCTUM_STATEFUL_DOMAINS=localhost:5173,localhost:3000
+
+# ── CORS (Frontend URL) ──
+FRONTEND_URL=http://localhost:5173
+```
+
+---
+
+## FASE 6 — Konfigurasi CORS
+
+Buka file `config/cors.php` di Laravel project, ubah menjadi:
+
+```php
+<?php
+
+return [
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => [
+        env('FRONTEND_URL', 'http://localhost:5173'),
+    ],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => false,
+];
+```
+
+---
+
+## FASE 7 — Konfigurasi `app/Models/User.php`
+
+> [!IMPORTANT]
+> File `User.php` yang sudah kita buat **menggantikan** file bawaan Laravel. Pastikan sudah disalin di Langkah 3.1.
+
+Verifikasi file `app/Models/User.php` sudah menggunakan `HasApiTokens` dari Sanctum:
+
+```php
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    // ...
+}
+```
+
+---
+
+## FASE 8 — Generate Key & Jalankan Migration
+
+```bash
+# Dari dalam folder hmdsi-api-fresh via terminal Laragon
+
+# 1. Generate APP_KEY
+php artisan key:generate
+
+# 2. Cek koneksi database
+php artisan db:show
+
+# 3. Jalankan semua migration
+php artisan migrate
+
+# 4. Jalankan seeder (isi data awal)
+php artisan db:seed
+
+# 5. Jalankan server
+php artisan serve
+```
+
+### Output yang diharapkan:
+
+```
+Migration table created successfully.
+Migrating: 2024_01_01_000001_create_users_table
+Migrated:  2024_01_01_000001_create_users_table (xxx ms)
+Migrating: 2024_01_01_000002_create_periods_table
+...
+Migrated:  2024_01_01_000017_create_site_stats_table
+
+INFO  Running seeders.
+ManagementRoleSeeder ........ DONE
+UserSeeder .................. DONE
+PeriodSeeder ................ DONE
+SiteStatSeeder .............. DONE
+
+INFO  Database seeding completed successfully.
+```
+
+---
+
+## FASE 9 — Verifikasi
+
+### Test API berjalan:
+```bash
+# Server harus jalan dulu: php artisan serve
+curl http://localhost:8000/api/stats
+```
+
+### Cek di database menggunakan HeidiSQL (Laragon):
+- Buka Laragon → klik **Database** → HeidiSQL terbuka
+- Verifikasi semua 17 tabel sudah terbuat
+- Cek tabel `users` → harus ada 3 akun admin
+- Cek tabel `departments` → harus ada 12 departemen
+- Cek tabel `site_stats` → harus ada 5 baris stats
+
+---
+
+## Troubleshooting Umum
+
+| Error | Solusi |
+|-------|--------|
+| `php: command not found` | Gunakan Terminal Laragon, bukan terminal biasa |
+| `SQLSTATE[HY000] Connection refused` | Pastikan MySQL Laragon sudah **Start All** |
+| `Illuminate\Database\QueryException: SSL` | Aiven butuh `ca.pem` — gunakan MySQL lokal dulu |
+| `Class not found` | Jalankan `composer dump-autoload` |
+| `Migration already exists` | Hapus migration bawaan Laravel (langkah 3.2) |
+| `Key too long` pada MySQL lama | Tambahkan `Schema::defaultStringLength(191);` di `AppServiceProvider::boot()` |
+
+---
+
+## Ringkasan Perintah (Copy-Paste Ready)
+
+```bash
+# 1. Buat project (di d:/hmdsi-web)
+composer create-project laravel/laravel hmdsi-api-fresh
+cd hmdsi-api-fresh
+
+# 2. Install Sanctum
+composer require laravel/sanctum
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+# 3. Salin file yang sudah di-generate
+cp -r ../hmdsi-api/database/migrations/*.php database/migrations/
+cp -r ../hmdsi-api/app/Models/*.php app/Models/
+cp -r ../hmdsi-api/database/seeders/*.php database/seeders/
+
+# 4. Hapus migration bawaan Laravel
+del database\migrations\0001_01_01_000000_create_users_table.php
+del database\migrations\0001_01_01_000001_create_cache_table.php
+del database\migrations\0001_01_01_000002_create_jobs_table.php
+
+# 5. Edit .env (sesuaikan DB credentials)
+
+# 6. Jalankan
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+php artisan serve
+```

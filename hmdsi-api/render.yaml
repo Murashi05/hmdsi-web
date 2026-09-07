@@ -1,0 +1,58 @@
+# Render Blueprint - HMDSI API Backend
+# Deploy ke Render: https://dashboard.render.com/blueprints
+
+services:
+  # ── Laravel API Backend ──────────────────────────────────────
+  - type: web
+    name: hmdsi-api
+    env: php
+    region: singapore
+    plan: starter
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      cp .env.example .env
+      php artisan key:generate
+      php artisan migrate --force
+      php artisan db:seed --force
+    startCommand: |
+      php artisan serve --port=$PORT
+    healthCheckPath: /api/stats
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: hmdsi-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+        suffix: /api
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: hmdsi-frontend
+      - key: SANCTUM_STATEFUL_DOMAINS
+        fromService:
+          type: web
+          name: hmdsi-frontend
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false  # Set di Render Dashboard → Environment
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        sync: false  # Set di Render Dashboard → Environment
+      - key: DB_USERNAME
+        sync: false  # Set di Render Dashboard → Environment
+      - key: DB_PASSWORD
+        sync: false  # Set di Render Dashboard → Environment
+      - key: CACHE_STORE
+        value: redis
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr

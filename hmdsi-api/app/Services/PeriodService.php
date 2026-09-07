@@ -44,4 +44,9 @@ class PeriodService
 
         return $period;
     }
+
+    public function delete(Period $period): void
+    {
+        $this->periods->delete($period);
+    }
 }

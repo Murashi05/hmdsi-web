@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, CheckCircle, Clock, AlertCircle, XCircle, MessageSquare, Reply, X } from 'lucide-react';
 import { apiClient } from '../../config/axios';
+import { aspirationService } from '../../services/aspiration.service';
 import type { ApiResponse, Aspiration, AspirationStats, PaginatedData } from '../../services/api.types';
 
 const STATUS_CONFIG = {
@@ -38,7 +39,7 @@ export default function AdminAspirationsPage() {
 
   const { data: stats } = useQuery({
     queryKey: ['admin-aspirations-stats'],
-    queryFn: () => apiClient.get<ApiResponse<AspirationStats>>('/api/aspirations/stats').then((r) => r.data.data),
+    queryFn: aspirationService.getStats,
   });
 
   const respondMutation = useMutation({

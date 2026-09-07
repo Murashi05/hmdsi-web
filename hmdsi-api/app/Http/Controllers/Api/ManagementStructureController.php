@@ -7,6 +7,7 @@ use App\Http\Requests\Management\StoreManagementStructureRequest;
 use App\Http\Requests\Member\StoreMemberRequest;
 use App\Http\Resources\ManagementStructureResource;
 use App\Http\Resources\MemberResource;
+use App\Models\ManagementRole;
 use App\Models\ManagementStructure;
 use App\Models\Member;
 use App\Services\ManagementStructureService;
@@ -24,6 +25,11 @@ class ManagementStructureController extends Controller
         $items = $this->structures->list($request->only(['period_id', 'department_id', 'department_slug']));
 
         return $this->success(ManagementStructureResource::collection($items));
+    }
+
+    public function roles(): JsonResponse
+    {
+        return $this->success(ManagementRole::orderBy('level')->get());
     }
 
     public function storeMember(StoreMemberRequest $request): JsonResponse

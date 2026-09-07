@@ -30,4 +30,15 @@ class AboutController extends Controller
     {
         return $this->success(new AboutContentResource($this->about->update($aboutContent, $request->validated())));
     }
+
+    public function updateActive(UpdateAboutContentRequest $request): JsonResponse
+    {
+        $content = $this->about->active();
+
+        if (! $content) {
+            return $this->error('No active about content found.', 404);
+        }
+
+        return $this->success(new AboutContentResource($this->about->update($content, $request->validated())));
+    }
 }

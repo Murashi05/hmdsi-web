@@ -178,10 +178,10 @@ export default function Navbar() {
                   >
                     <Link
                       to={link.to}
-                      className={`block text-5xl font-sans font-bold py-3 transition-all duration-300 ${
+                      className={`block text-3xl sm:text-4xl font-sans font-bold py-2 sm:py-3 transition-all duration-300 ${
                         location.pathname === link.to
                           ? 'text-[#0200B5]'
-                          : 'text-white hover:text-[#0200B5] hover:translate-x-4'
+                          : 'text-white hover:text-[#0200B5] hover:translate-x-2 sm:hover:translate-x-4'
                       }`}
                     >
                       {link.label}

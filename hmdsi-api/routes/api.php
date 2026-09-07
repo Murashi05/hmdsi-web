@@ -53,12 +53,18 @@ Route::get('/aspirations/track/{code}', [AspirationController::class, 'track']);
 Route::post('/aspirations', [AspirationController::class, 'store']);
 
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::get('/periods', [PeriodController::class, 'index']);
     Route::post('/periods', [PeriodController::class, 'store']);
+    Route::put('/periods/{period}', [PeriodController::class, 'update']);
+    Route::delete('/periods/{period}', [PeriodController::class, 'destroy']);
 
+    Route::get('/departments', [DepartmentController::class, 'index']);
     Route::post('/departments', [DepartmentController::class, 'store']);
     Route::put('/departments/{department}', [DepartmentController::class, 'update']);
     Route::delete('/departments/{department}', [DepartmentController::class, 'destroy']);
 
+    Route::get('/members', [ManagementStructureController::class, 'index']);
+    Route::get('/roles', [ManagementStructureController::class, 'roles']);
     Route::post('/members', [ManagementStructureController::class, 'storeMember']);
     Route::put('/members/{member}', [ManagementStructureController::class, 'updateMember']);
     Route::delete('/members/{member}', [ManagementStructureController::class, 'destroyMember']);
@@ -67,26 +73,33 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/management-structures/{managementStructure}', [ManagementStructureController::class, 'update']);
     Route::delete('/management-structures/{managementStructure}', [ManagementStructureController::class, 'destroy']);
 
+    Route::get('/work-programs', [WorkProgramController::class, 'index']);
     Route::post('/work-programs', [WorkProgramController::class, 'store']);
     Route::put('/work-programs/{workProgram}', [WorkProgramController::class, 'update']);
     Route::delete('/work-programs/{workProgram}', [WorkProgramController::class, 'destroy']);
 
+    Route::get('/news', [NewsArticleController::class, 'index']);
     Route::post('/news', [NewsArticleController::class, 'store']);
     Route::put('/news/{newsArticle}', [NewsArticleController::class, 'update']);
     Route::delete('/news/{newsArticle}', [NewsArticleController::class, 'destroy']);
 
+    Route::get('/gallery', [GalleryController::class, 'index']);
     Route::post('/gallery', [GalleryController::class, 'store']);
     Route::put('/gallery/{galleryEvent}', [GalleryController::class, 'update']);
     Route::delete('/gallery/{galleryEvent}', [GalleryController::class, 'destroy']);
     Route::post('/gallery/{galleryEvent}/items', [GalleryController::class, 'storeItem']);
     Route::delete('/gallery/items/{galleryItem}', [GalleryController::class, 'destroyItem']);
 
+    Route::get('/resources', [ResourceArchiveController::class, 'index']);
     Route::post('/resources', [ResourceArchiveController::class, 'store']);
     Route::put('/resources/{resource}', [ResourceArchiveController::class, 'update']);
     Route::delete('/resources/{resource}', [ResourceArchiveController::class, 'destroy']);
 
+    Route::get('/about', [AboutController::class, 'show']);
     Route::put('/about/{aboutContent}', [AboutController::class, 'update']);
-    Route::put('/stats', [SiteStatController::class, 'upsert']);
+    Route::put('/about', [AboutController::class, 'updateActive']);
+    Route::get('/stats', [SiteStatController::class, 'index']);
+    Route::put('/stats', [SiteStatController::class, 'batchUpsert']);
 
     Route::get('/aspirations', [AspirationController::class, 'adminIndex']);
     Route::post('/aspirations/{aspiration}/respond', [AspirationController::class, 'respond']);

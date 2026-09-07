@@ -33,4 +33,21 @@ class SiteStatController extends Controller
 
         return $this->success(new SiteStatResource($stat));
     }
+
+    public function batchUpsert(Request $request): JsonResponse
+    {
+        $items = $request->validate([
+            'stats' => ['required', 'array', 'min:1'],
+            'stats.*.key' => ['required', 'string', 'max:80'],
+            'stats.*.value' => ['required', 'string', 'max:50'],
+        ]);
+
+        $updated = [];
+        foreach ($items['stats'] as $item) {
+            $stat = $this->stats->upsert($item['key'], ['value' => $item['value']]);
+            $updated[] = new SiteStatResource($stat);
+        }
+
+        return $this->success($updated);
+    }
 }

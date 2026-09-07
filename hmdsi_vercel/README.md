@@ -399,4 +399,27 @@ VITE_API_URL=https://hmdsi-api.yourdomain.com/api
 
 ---
 
+## 🔄 Riwayat Perubahan (Changelog)
+
+### v2026.09.07 — Mobile UI & Admin Fixes
+**Mobile UI Improvements:**
+- Navbar mobile menu: link size diperkecil dari `text-5xl` ke `text-3xl sm:text-4xl` agar tidak overflow di layar kecil
+- Hero h1 title: diperkecil dari `text-[5.5rem]` ke `text-3xl sm:text-4xl md:text-5xl lg:text-[7rem]` agar proporsional di mobile
+- Mobile menu transitions lebih smooth (hover translate lebih kecil)
+- Aspiration form input fields: tambahkan `bg-white text-[#0a0a1a]` styling agar teks tetap terlihat saat mengetik di mode non-anonim
+
+**Admin Panel Fixes (405 Method Not Allowed):**
+- Backend: tambah missing GET routes untuk `/admin/periods`, `/admin/members`, `/admin/news`, `/admin/gallery`, `/admin/resources`, `/admin/work-programs`, `/admin/departments`, `/admin/stats`, `/admin/about`
+- Backend: tambah endpoint `/admin/roles` untuk list management roles
+- Backend: tambah PUT `/admin/about` (active content update) dan batch stats upsert endpoint
+- Frontend: `AdminAspirationsPage` — ganti `/api/aspirations/stats` (404) dengan `aspirationService.getStats()`
+- Frontend: `AdminDashboardPage` — ganti `newsService.getNews()` (tidak ada) dengan `newsService.getArticles()`
+- Frontend: `AdminSettingsPage` — rewrite dengan full handlers untuk About/Stats/Period (modal CRUD, validasi, error handling)
+
+**Stability Fixes:**
+- `AdminMembersPage`: missing `motion` import menyebabkan stuck saat submit modal — fixed
+- `AuthContext`: initial `isLoading=false` menyebabkan ProtectedRoute redirect sebelum checkAuth selesai — fixed dengan `isLoading=true` + auto checkAuth on mount
+
+---
+
 *© HMDSI — Built with React + Vite, powered by passionate developers.*

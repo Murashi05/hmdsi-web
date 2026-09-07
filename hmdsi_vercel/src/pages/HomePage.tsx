@@ -77,7 +77,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4 }}
-              className="text-[5.5rem] md:text-7xl lg:text-[7rem] font-sans font-black leading-[0.9] tracking-tight mb-8 md:mb-10"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-[7rem] font-sans font-black leading-[0.9] tracking-tight mb-6 md:mb-10"
             >
               <span className="block text-white">Satu</span>
               <span className="block mt-1 h-[1.2em] overflow-hidden relative">

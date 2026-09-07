@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
 
   const { data: newsList } = useQuery({
     queryKey: ['admin-news-recent'],
-    queryFn: () => newsService.getNews({ per_page: 4 }),
+    queryFn: () => newsService.getArticles({ per_page: 4 }),
   });
 
   const { data: structures } = useQuery({

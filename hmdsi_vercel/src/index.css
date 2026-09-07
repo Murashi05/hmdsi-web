@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap');
+@import "tailwindcss";
+
+/* copal
+   #0200B5 (deep blue)
+   #0000F0 (bright blue)
+*/
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+
+  --color-brand-primary: #0200B5;
+  --color-brand-accent: #0000F0;
+  --color-bg-dark: #050014;
+  --color-bg-light: #f4f0e6;
+
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+  --color-border-light: rgba(10, 10, 26, 0.08);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-sans text-[#f4f0e6] bg-[#050014] antialiased;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans tracking-tight;
+    line-height: 0.95;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ::selection {
+    background: #0200B5;
+    color: white;
+  }
+}
+
+@layer components {
+  .editorial-container {
+    @apply max-w-[1400px] mx-auto;
+    padding-left: clamp(1rem, 5vw, 5rem);
+    padding-right: clamp(1rem, 5vw, 5rem);
+  }
+
+  .link-hover {
+    @apply relative;
+  }
+  .link-hover::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-[1px] bg-current;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .link-hover:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .btn-editorial {
+    @apply inline-flex items-center justify-center font-sans font-semibold text-xs uppercase tracking-[0.15em] transition-all duration-400 cursor-pointer;
+    padding: 0.875rem 2rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .btn-editorial-primary {
+    background: linear-gradient(135deg, #0200B5, #0000F0);
+    color: white;
+    border-color: transparent;
+  }
+  .btn-editorial-primary:hover {
+    background: linear-gradient(135deg, #0000F0, #0200B5);
+    box-shadow: 0 8px 32px rgba(2, 0, 181, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-editorial-outline {
+    border-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    background: transparent;
+  }
+  .btn-editorial-outline:hover {
+    border-color: rgba(2, 0, 181, 0.5);
+    background: rgba(2, 0, 181, 0.1);
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .btn-editorial {
+    padding: 1rem 2rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

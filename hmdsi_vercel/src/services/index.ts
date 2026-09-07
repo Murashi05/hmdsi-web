@@ -1,0 +1,10 @@
+export { aboutService } from './about.service';
+export { aspirationService } from './aspiration.service';
+export { authService } from './auth.service';
+export { departmentService } from './department.service';
+export { galleryService } from './gallery.service';
+export { newsService } from './news.service';
+export { resourceService } from './resource.service';
+export { siteStatService } from './site-stat.service';
+export { structureService } from './structure.service';
+export { workProgramService } from './work-program.service';

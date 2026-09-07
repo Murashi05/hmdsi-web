@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { authService } from '../services/auth.service';
 import type { AuthUser } from '../services/api.types';
 
@@ -15,9 +15,26 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = Boolean(user);
+
+  const checkAuth = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const userData = await authService.me();
+      setUser(userData);
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Auto-check auth on mount to restore session from token
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
@@ -35,18 +52,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logout();
     } finally {
       setUser(null);
-      setIsLoading(false);
-    }
-  }, []);
-
-  const checkAuth = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const userData = await authService.me();
-      setUser(userData);
-    } catch {
-      setUser(null);
-    } finally {
       setIsLoading(false);
     }
   }, []);

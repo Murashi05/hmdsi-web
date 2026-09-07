@@ -296,7 +296,7 @@ export default function AspirationPage() {
                               type="text"
                               value={senderName}
                               onChange={(e) => setSenderName(e.target.value)}
-                              className="w-full pl-10 pr-3 py-2.5 border border-[#0a0a1a]/10 rounded-lg text-sm focus:border-[#0200B5] focus:outline-none"
+                              className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#0a0a1a]/10 rounded-lg text-[#0a0a1a] text-sm focus:border-[#0200B5] focus:outline-none"
                               placeholder="Nama Anda"
                             />
                           </div>
@@ -312,7 +312,7 @@ export default function AspirationPage() {
                                 type="email"
                                 value={senderEmail}
                                 onChange={(e) => setSenderEmail(e.target.value)}
-                                className="w-full pl-10 pr-3 py-2.5 border border-[#0a0a1a]/10 rounded-lg text-sm focus:border-[#0200B5] focus:outline-none"
+                                className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#0a0a1a]/10 rounded-lg text-[#0a0a1a] text-sm focus:border-[#0200B5] focus:outline-none"
                                 placeholder="email@..."
                               />
                             </div>
@@ -327,7 +327,7 @@ export default function AspirationPage() {
                                 type="text"
                                 value={senderStudentId}
                                 onChange={(e) => setSenderStudentId(e.target.value)}
-                                className="w-full pl-10 pr-3 py-2.5 border border-[#0a0a1a]/10 rounded-lg text-sm focus:border-[#0200B5] focus:outline-none"
+                                className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#0a0a1a]/10 rounded-lg text-[#0a0a1a] text-sm focus:border-[#0200B5] focus:outline-none"
                                 placeholder="xxxxxxxx"
                               />
                             </div>

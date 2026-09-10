@@ -460,3 +460,16 @@ Pagination response:
 ---
 
 *© HMDSI — Built with Laravel, powered by passionate developers.*
+## Data Pengurus Kabinet Narakarsa
+
+Data pengurus Kabinet Narakarsa 2026/2027 telah diimpor dari file `DATA PENGURUS HIMPUNAN KABINET NARAKARSA.xlsx` ke database SQLite bawaan.
+
+Seeder yang digunakan: `database/seeders/NarakarsaManagementSeeder.php`.
+
+Untuk mengimpor ulang pada environment baru setelah migrasi:
+
+```bash
+php artisan db:seed --class=NarakarsaManagementSeeder
+```
+
+Seeder menetapkan periode `2026`, tema `Kabinet Narakarsa`, dan membuat 63 assignment pengurus aktif. Urutan pada Excel digunakan untuk menentukan jabatan: pimpinan, wakil, lalu staff pada masing-masing bagian.

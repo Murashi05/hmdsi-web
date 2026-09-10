@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PeriodResource;
+use App\Models\Period;
 use App\Services\PeriodService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class PeriodController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['sometimes', 'string', 'max:50'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'is_active' => ['sometimes', 'boolean'],
@@ -43,7 +44,7 @@ class PeriodController extends Controller
         return $this->created(new PeriodResource($this->periods->create($data)));
     }
 
-    public function update(Request $request, $period): JsonResponse
+    public function update(Request $request, Period $period): JsonResponse
     {
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:50'],
@@ -58,7 +59,7 @@ class PeriodController extends Controller
         return $this->success(new PeriodResource($period));
     }
 
-    public function destroy($period): JsonResponse
+    public function destroy(Period $period): JsonResponse
     {
         $this->periods->delete($period);
 

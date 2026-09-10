@@ -148,7 +148,7 @@ export default function AdminSettingsPage() {
 
   const handlePeriodSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!periodForm.name.trim() || !periodForm.start_date || !periodForm.end_date) {
+    if (!periodForm.start_date || !periodForm.end_date || !periodForm.theme.trim()) {
       return;
     }
     periodMutation.mutate();
@@ -272,6 +272,7 @@ export default function AdminSettingsPage() {
             </div>
           </div>
           <div className="space-y-3">
+            <p className="text-white/35 text-xs font-sans">Nama kabinet diisi melalui Tema. Satu tahun hanya boleh memiliki satu kabinet; periode aktif tidak dapat dihapus.</p>
             {periods?.map((period) => (
               <div
                 key={period.id}

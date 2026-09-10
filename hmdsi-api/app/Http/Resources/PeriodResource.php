@@ -16,6 +16,7 @@ class PeriodResource extends JsonResource
             'end_date' => optional($this->end_date)?->toDateString(),
             'is_active' => $this->is_active,
             'theme' => $this->theme,
+            'cabinet_name' => $this->theme,
         ];
     }
 }

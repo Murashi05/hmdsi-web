@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             UserSeeder::class,
             PeriodSeeder::class,
+            NarakarsaManagementSeeder::class,
             SiteStatSeeder::class,
             NewsCategorySeeder::class,
         ]);

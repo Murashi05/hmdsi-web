@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\GalleryEvent;
+use App\Models\Period;
 use App\Models\GalleryItem;
 use App\Repositories\GalleryEventRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,6 +22,11 @@ class GalleryService
         );
     }
 
+    public function adminPaginate(array $filters, int $perPage = 20): LengthAwarePaginator
+    {
+        return $this->events->paginate($this->events->adminQuery($filters), $perPage);
+    }
+
     public function findPublishedBySlug(string $slug): GalleryEvent
     {
         $event = $this->events->findPublishedBySlug($slug);
@@ -32,11 +38,13 @@ class GalleryService
 
     public function createEvent(array $data): GalleryEvent
     {
+        $data['period_id'] ??= Period::active()->value('id');
         return $this->events->create($data);
     }
 
     public function updateEvent(GalleryEvent $event, array $data): GalleryEvent
     {
+        unset($data['period_id']);
         return $this->events->update($event, $data);
     }
 
@@ -45,8 +53,13 @@ class GalleryService
         return $this->events->delete($event);
     }
 
-    public function addItem(GalleryEvent $event, array $data): GalleryItem
+    public function addItem(GalleryEvent $event, array $data, $file = null): GalleryItem
     {
+        if ($file) {
+            $path = $file->store('gallery/'.$event->period_id.'/'.$event->id, 'public');
+            $data['file_url'] = asset('storage/'.$path);
+            $data['type'] = $data['type'] ?? 'photo';
+        }
         return $event->items()->create($data);
     }
 

@@ -322,3 +322,14 @@ hmdsi-web/
 ---
 
 *© HMDSI — Last Updated: 2026-09-07*
+
+### Fitur upload dokumen & galeri
+
+Fitur Arsip Dokumen dan upload foto galeri menggunakan Laravel `public` disk. Setelah deploy jalankan:
+
+```bash
+php artisan storage:link
+php artisan migrate --force
+```
+
+Untuk production di hosting yang filesystem-nya ephemeral, gunakan persistent storage atau object storage (misalnya Cloudinary/S3) agar file upload tidak hilang saat service restart/redeploy.

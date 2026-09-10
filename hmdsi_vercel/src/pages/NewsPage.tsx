@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -14,7 +16,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; label: string 
   event: { bg: 'bg-purple-100', text: 'text-purple-600', label: 'Event' },
 };
 
-const Section = ({ children, className = '', id = '' }: { children: React.ReactNode; className?: string; id?: string }) => (
+const Section = ({ children, className = '', id = '' }: { children: ReactNode; className?: string; id?: string }) => (
   <section id={id} className={`py-20 md:py-32 ${className}`}>{children}</section>
 );
 

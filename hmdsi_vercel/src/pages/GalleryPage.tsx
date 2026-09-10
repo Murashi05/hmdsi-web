@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Helmet } from 'react-helmet-async';
@@ -5,7 +7,7 @@ import { X, Calendar, Image as ImageIcon, ChevronLeft, ChevronRight } from 'luci
 import SectionHeader from '../components/SectionHeader';
 import { useGalleryEvents, useGalleryEvent } from '../hooks/useGallery';
 
-const Section = ({ children, className = '', id = '' }: { children: React.ReactNode; className?: string; id?: string }) => (
+const Section = ({ children, className = '', id = '' }: { children: ReactNode; className?: string; id?: string }) => (
   <section id={id} className={`py-20 md:py-32 ${className}`}>{children}</section>
 );
 

@@ -31,6 +31,14 @@ class NewsArticleRepository extends BaseRepository
             ->latest();
     }
 
+    public function adminQuery(array $filters): Builder
+    {
+        return $this->query()->with(['author','tags'])
+            ->when($filters['category'] ?? null, fn($q,$c) => $q->byCategory($c))
+            ->when($filters['status'] ?? null, fn($q,$v) => $q->where('status',$v))
+            ->latest('created_at');
+    }
+
     public function findPublishedBySlug(string $slug): ?NewsArticle
     {
         return $this->query()->with(['author', 'tags'])->published()->where('slug', $slug)->first();

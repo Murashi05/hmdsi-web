@@ -18,14 +18,16 @@ class PeriodSeeder extends Seeder
     {
         // ── 1. Create the active period ──────────────────────────────────────
         $period = Period::firstOrCreate(
-            ['name' => '2025/2026'],
+            ['name' => '2026'],
             [
-                'start_date' => '2025-09-01',
-                'end_date'   => '2026-08-31',
+                'start_date' => '2026-09-01',
+                'end_date'   => '2027-08-31',
                 'is_active'  => true,
-                'theme'      => 'Bersama Membangun, Bersatu Melangkah',
+                'theme'      => 'Kabinet Narakarsa',
             ]
         );
+
+        $period->setAsActive();
 
         // ── 2. Seed departments (mirroring existing structure.ts data) ────────
         $departments = $this->seedDepartments($period->id);
@@ -36,8 +38,8 @@ class PeriodSeeder extends Seeder
         // ── 4. Seed sample Work Programs ─────────────────────────────────────
         $this->seedWorkPrograms($period->id, $departments);
 
-        // ── 5. Seed sample Members & Structures ──────────────────────────────
-        $this->seedMembersAndStructures($period->id, $departments);
+        // Pengurus Kabinet Narakarsa diimpor oleh NarakarsaManagementSeeder.
+        // Data contoh lama sengaja tidak dibuat agar production tidak tercampur data dummy.
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -181,62 +183,4 @@ class PeriodSeeder extends Seeder
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-
-    private function seedMembersAndStructures(int $periodId, array $departments): void
-    {
-        $chairmanRole    = ManagementRole::where('name', 'Ketua')->first();
-        $viceChairRole   = ManagementRole::where('name', 'Wakil Ketua')->first();
-        $deptHeadRole    = ManagementRole::where('name', 'Kepala Departemen')->first();
-        $memberRole      = ManagementRole::where('name', 'Anggota')->first();
-
-        // Sample Ketua
-        $ketua = Member::firstOrCreate(
-            ['student_id' => '2210511001'],
-            [
-                'full_name'     => 'Ahmad Fauzi Ramadhani',
-                'study_program' => 'Sistem Informasi',
-                'batch_year'    => 2022,
-                'email'         => 'ahmad.fauzi@student.ac.id',
-                'instagram_handle' => '@ahmadfauzi_',
-                'bio'           => 'Ketua HMDSI Periode 2025/2026. Passionate tentang teknologi dan kepemimpinan organisasi.',
-            ]
-        );
-
-        ManagementStructure::firstOrCreate(
-            ['period_id' => $periodId, 'member_id' => $ketua->id, 'department_id' => $departments['chairman']->id, 'role_id' => $chairmanRole->id],
-            ['is_active' => true, 'joined_at' => '2025-09-01']
-        );
-
-        // Sample Wakil Ketua
-        $wakilKetua = Member::firstOrCreate(
-            ['student_id' => '2210511002'],
-            [
-                'full_name'     => 'Siti Nurhaliza Putri',
-                'study_program' => 'Sistem Informasi',
-                'batch_year'    => 2022,
-                'instagram_handle' => '@sitinurhaliza',
-            ]
-        );
-
-        ManagementStructure::firstOrCreate(
-            ['period_id' => $periodId, 'member_id' => $wakilKetua->id, 'department_id' => $departments['vice-chairman']->id, 'role_id' => $viceChairRole->id],
-            ['is_active' => true, 'joined_at' => '2025-09-01']
-        );
-
-        // Sample Kepala Akademik & Riset
-        $kabidAkademik = Member::firstOrCreate(
-            ['student_id' => '2210511010'],
-            [
-                'full_name'     => 'Rizky Aditya Pratama',
-                'study_program' => 'Sistem Informasi',
-                'batch_year'    => 2022,
-            ]
-        );
-
-        ManagementStructure::firstOrCreate(
-            ['period_id' => $periodId, 'member_id' => $kabidAkademik->id, 'department_id' => $departments['academic-research']->id, 'role_id' => $deptHeadRole->id],
-            ['is_active' => true, 'joined_at' => '2025-09-01']
-        );
-    }
 }

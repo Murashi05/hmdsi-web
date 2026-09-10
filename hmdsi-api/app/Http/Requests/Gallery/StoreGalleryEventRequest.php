@@ -14,7 +14,7 @@ class StoreGalleryEventRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'period_id' => ['required', 'exists:periods,id'],
+            'period_id' => ['nullable', 'exists:periods,id'],
             'title' => ['required', 'string', 'max:200'],
             'slug' => ['sometimes', 'string', 'max:220'],
             'description' => ['nullable', 'string'],

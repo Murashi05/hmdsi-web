@@ -15,7 +15,7 @@ class StoreWorkProgramRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'period_id' => ['required', 'exists:periods,id'],
+            'period_id' => ['nullable', 'exists:periods,id'],
             'department_id' => ['required', 'exists:departments,id'],
             'name' => ['required', 'string', 'max:200'],
             'slug' => ['sometimes', 'string', 'max:220', Rule::unique('work_programs', 'slug')->ignore($this->route('workProgram'))],

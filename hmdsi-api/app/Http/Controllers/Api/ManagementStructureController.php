@@ -27,6 +27,13 @@ class ManagementStructureController extends Controller
         return $this->success(ManagementStructureResource::collection($items));
     }
 
+    public function adminMembers(Request $request): JsonResponse
+    {
+        return $this->success(MemberResource::collection(
+            $this->structures->listMembersForAdmin($request->integer('period_id') ?: null)
+        ));
+    }
+
     public function roles(): JsonResponse
     {
         return $this->success(ManagementRole::orderBy('level')->get());
@@ -34,7 +41,9 @@ class ManagementStructureController extends Controller
 
     public function storeMember(StoreMemberRequest $request): JsonResponse
     {
-        return $this->created(new MemberResource($this->structures->createMember($request->validated())));
+        $member = $this->structures->createMember($request->validated());
+
+        return $this->created(new MemberResource($member->load(['managementStructures.role', 'managementStructures.department'])));
     }
 
     public function updateMember(Request $request, Member $member): JsonResponse
@@ -50,9 +59,14 @@ class ManagementStructureController extends Controller
             'linkedin_url' => ['nullable', 'url', 'max:255'],
             'instagram_handle' => ['nullable', 'string', 'max:80'],
             'bio' => ['nullable', 'string'],
+            'period_id' => ['nullable', 'integer', 'exists:periods,id'],
+            'management_role_id' => ['nullable', 'integer', 'exists:management_roles,id'],
+            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
         ]);
 
-        return $this->success(new MemberResource($this->structures->updateMember($member, $data)));
+        return $this->success(new MemberResource(
+            $this->structures->updateMemberWithAssignment($member, $data)->load(['managementStructures.role', 'managementStructures.department'])
+        ));
     }
 
     public function destroyMember(Member $member): JsonResponse

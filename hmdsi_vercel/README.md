@@ -1,7 +1,7 @@
 # HMDSI Frontend — React + Vite Public Website
 
 > **HMDSI** = Himpunan Mahasiswa Diploma Sistem Informasi · FIT Telkom University
-> **Tech Stack:** React 18+ · TypeScript · Vite · TanStack Query · Tailwind CSS · Lucide React · React Router v6
+> **Tech Stack:** React 19 · TypeScript · Vite · TanStack Query · Tailwind CSS · Lucide React · React Router v7
 
 Frontend ini adalah **website landing page publik** untuk HMDSI. Dibangun dengan arsitektur **Feature-Based Component Structure + Service Layer Pattern** menggunakan TanStack Query (React Query) untuk state management dan data fetching. Backend API terpisah (Laravel).
 
@@ -15,7 +15,7 @@ Website User (Tanpa Login)
 ├─ Homepage (/) ────────────────────── Hero Banner, Quick Stats, Values, CTA
 │     │
 │     ├─ useSiteStats() → GET /api/stats
-│     └─ Static content (values, CTA)
+│     └─ useAboutContent() → GET /api/about
 │
 ├─ About (/about) ──────────────────── Visi, Misi, Sejarah HMDSI
 │     │
@@ -23,7 +23,8 @@ Website User (Tanpa Login)
 │
 ├─ Structure (/structure) ──────────── Org Chart (Leader → Core → Department)
 │     │
-│     └─ useManagementStructures() → GET /api/structures
+│     ├─ usePeriods() → GET /api/periods
+│     └─ useManagementStructures() → GET /api/management-structures?period_id=:id
 │
 ├─ Program Kerja (/proker) ──────────── Daftar Program Kerja per Departemen
 │     │
@@ -118,8 +119,6 @@ hmdsi_vercel/
 │   │   ├── axios.ts          # Axios client instance
 │   │   ├── endpoints.ts      # API endpoint constants
 │   │   └── query-keys.ts     # TanStack Query key factory
-│   ├── data/                 # Static data (hardcoded)
-│   │   └── structure.ts     # Static organization structure data
 │   ├── hooks/                # Custom React hooks (TanStack Query wrappers)
 │   │   ├── useAboutContent.ts
 │   │   ├── useAspirations.ts
@@ -127,6 +126,7 @@ hmdsi_vercel/
 │   │   ├── useGallery.ts
 │   │   ├── useManagementStructures.ts
 │   │   ├── useNews.ts
+│   │   ├── usePeriod.ts
 │   │   ├── useResources.ts
 │   │   ├── useSiteStats.ts
 │   │   └── useWorkPrograms.ts
@@ -156,6 +156,8 @@ hmdsi_vercel/
 │   │   ├── index.ts          # Re-export all services
 │   │   ├── about.service.ts
 │   │   ├── aspiration.service.ts
+│   │   ├── document.service.ts
+│   │   ├── period.service.ts
 │   │   ├── auth.service.ts
 │   │   ├── department.service.ts
 │   │   ├── gallery.service.ts
@@ -423,3 +425,25 @@ VITE_API_URL=https://hmdsi-api.yourdomain.com/api
 ---
 
 *© HMDSI — Built with React + Vite, powered by passionate developers.*
+
+
+## Perbaikan integrasi terbaru
+
+- Routing publik menggunakan satu `Routes` tree + `Outlet`, bukan nested `<Routes>` di dalam route `/*`. Ini mencegah route publik tertentu menjadi blank dan membuat `/admin/*` terpisah dari layout publik.
+- Halaman Structure sekarang mengambil periode dari `GET /api/periods` dan struktur dari `GET /api/management-structures?period_id=:id`.
+- Halaman Structure memiliki state loading, empty, API error, dan tombol retry sehingga kegagalan API tidak lagi menghasilkan halaman putih tanpa informasi.
+- Pengelompokan pengurus tidak bergantung pada daftar jabatan yang kaku; semua jabatan dengan departemen bertipe `department` akan tetap ditampilkan.
+- Data struktur organisasi statis lama (`src/data/structure.ts`) dihapus karena sudah tidak menjadi sumber data halaman publik.
+- Query key periode dan struktur dipusatkan pada `query-keys.ts`.
+- Program Kerja tidak lagi memaksa `is_highlight=false`, sehingga item highlight dari API dapat tampil pada bagian highlight.
+- `documentService` dan `periodService` juga diekspor dari service index agar seluruh service layer konsisten.
+
+### Jika Structure masih tidak muncul setelah perbaikan
+
+Pastikan frontend memiliki environment variable:
+
+```env
+VITE_API_URL=https://DOMAIN-BACKEND/api
+```
+
+Jika `VITE_API_URL` tidak diset, frontend akan mencoba `http://localhost:8000/api`. Setelah mengubah `.env`, restart Vite/deploy ulang.

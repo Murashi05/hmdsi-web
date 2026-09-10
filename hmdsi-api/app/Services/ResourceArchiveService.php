@@ -20,6 +20,11 @@ class ResourceArchiveService
         );
     }
 
+    public function adminPaginate(array $filters, int $perPage = 20): LengthAwarePaginator
+    {
+        return $this->resources->paginate($this->resources->adminQuery($filters), $perPage);
+    }
+
     public function findPublished(int $id): ArchiveResource
     {
         /** @var ArchiveResource $resource */

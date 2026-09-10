@@ -5,7 +5,10 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://hmdsi-api.yourdomain.com/api/$1" }
+    {
+      "source": "/((?!assets/|images/|favicon\\.ico).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {

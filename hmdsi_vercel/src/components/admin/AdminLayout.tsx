@@ -24,6 +24,7 @@ const navItems = [
   { icon: FileText, label: 'News', path: '/admin/news' },
   { icon: Image, label: 'Gallery', path: '/admin/gallery' },
   { icon: FolderOpen, label: 'Resources', path: '/admin/resources' },
+  { icon: FileText, label: 'Arsip Dokumen', path: '/admin/documents' },
   { icon: MessageSquare, label: 'Aspirations', path: '/admin/aspirations' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];

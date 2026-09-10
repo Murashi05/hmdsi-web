@@ -29,6 +29,16 @@ class GalleryController extends Controller
         return $this->paginated($paginator, 'OK', GalleryEventResource::class);
     }
 
+    public function adminIndex(Request $request): JsonResponse
+    {
+        $paginator = $this->gallery->adminPaginate(
+            $request->only(['period_id', 'search']),
+            $request->integer('per_page', 20)
+        );
+
+        return $this->paginated($paginator, 'OK', GalleryEventResource::class);
+    }
+
     public function show(string $slug): JsonResponse
     {
         return $this->success(new GalleryEventResource($this->gallery->findPublishedBySlug($slug)));
@@ -53,7 +63,7 @@ class GalleryController extends Controller
 
     public function storeItem(StoreGalleryItemRequest $request, GalleryEvent $galleryEvent): JsonResponse
     {
-        $item = $this->gallery->addItem($galleryEvent, $request->validated());
+        $item = $this->gallery->addItem($galleryEvent, $request->validated(), $request->file('file'));
 
         return $this->created(new GalleryItemResource($item));
     }

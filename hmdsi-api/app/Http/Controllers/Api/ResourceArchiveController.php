@@ -26,6 +26,16 @@ class ResourceArchiveController extends Controller
         return $this->paginated($paginator, 'OK', ArchiveResourceResource::class);
     }
 
+    public function adminIndex(Request $request): JsonResponse
+    {
+        $paginator = $this->resources->adminPaginate(
+            $request->only(['category', 'academic_year', 'search']),
+            $request->integer('per_page', 20)
+        );
+
+        return $this->paginated($paginator, 'OK', ArchiveResourceResource::class);
+    }
+
     public function download(int $id): JsonResponse
     {
         $resource = $this->resources->findPublished($id);

@@ -82,6 +82,15 @@ Lihat detail lengkap di: **`hmdsi_database_schema.md`**
 - 🔲 Testimonial/feedback (opsional)
 - 🔲 Cloudinary integration di backend (file upload helper)
 
+## Perbaikan stabilitas (2026-09-10)
+- ✅ Routing React Router dirapikan menjadi satu route tree dengan `Outlet`; public/admin tidak lagi bercampur melalui nested `<Routes>`.
+- ✅ Public Structure diberi error boundary + error state + retry agar kegagalan API tidak menyebabkan blank page.
+- ✅ Structure mengambil periode dan struktur secara terintegrasi dari API dan menampilkan semua jabatan/departemen yang tersedia.
+- ✅ Static organization structure yang sudah tidak digunakan dihapus.
+- ✅ Query key periode distandarkan.
+- ✅ Filter highlight pada halaman Program Kerja tidak lagi dipaksa `false`.
+
+
 ### Deployment Files
 - ✅ `DEPLOYMENT_GUIDE.md` — Panduan deployment lengkap
 - ✅ `hmdsi-api/render.yaml` — Render Blueprint untuk backend

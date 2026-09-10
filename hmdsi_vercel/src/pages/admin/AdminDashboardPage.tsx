@@ -38,7 +38,7 @@ export default function AdminDashboardPage() {
 
   const { data: stats } = useQuery({
     queryKey: ['admin-stats-overview'],
-    queryFn: siteStatService.getStats,
+    queryFn: siteStatService.getHomepageStats,
   });
 
   const { data: aspirations } = useQuery({

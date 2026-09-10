@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AboutController;
 use App\Http\Controllers\Api\AspirationController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DepartmentController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\ManagementStructureController;
 use App\Http\Controllers\Api\NewsArticleController;
@@ -43,6 +44,8 @@ Route::get('/gallery/{slug}', [GalleryController::class, 'show']);
 
 Route::get('/resources', [ResourceArchiveController::class, 'index']);
 Route::post('/resources/{id}/download', [ResourceArchiveController::class, 'download']);
+Route::get('/documents', [DocumentController::class, 'publicIndex']);
+Route::post('/documents/{document}/download', [DocumentController::class, 'download']);
 
 Route::get('/about', [AboutController::class, 'show']);
 Route::get('/stats', [SiteStatController::class, 'index']);
@@ -63,7 +66,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/departments/{department}', [DepartmentController::class, 'update']);
     Route::delete('/departments/{department}', [DepartmentController::class, 'destroy']);
 
-    Route::get('/members', [ManagementStructureController::class, 'index']);
+    Route::get('/members', [ManagementStructureController::class, 'adminMembers']);
     Route::get('/roles', [ManagementStructureController::class, 'roles']);
     Route::post('/members', [ManagementStructureController::class, 'storeMember']);
     Route::put('/members/{member}', [ManagementStructureController::class, 'updateMember']);
@@ -78,20 +81,24 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/work-programs/{workProgram}', [WorkProgramController::class, 'update']);
     Route::delete('/work-programs/{workProgram}', [WorkProgramController::class, 'destroy']);
 
-    Route::get('/news', [NewsArticleController::class, 'index']);
+    Route::get('/news', [NewsArticleController::class, 'adminIndex']);
     Route::post('/news', [NewsArticleController::class, 'store']);
     Route::put('/news/{newsArticle}', [NewsArticleController::class, 'update']);
     Route::delete('/news/{newsArticle}', [NewsArticleController::class, 'destroy']);
 
-    Route::get('/gallery', [GalleryController::class, 'index']);
+    Route::get('/gallery', [GalleryController::class, 'adminIndex']);
     Route::post('/gallery', [GalleryController::class, 'store']);
     Route::put('/gallery/{galleryEvent}', [GalleryController::class, 'update']);
     Route::delete('/gallery/{galleryEvent}', [GalleryController::class, 'destroy']);
     Route::post('/gallery/{galleryEvent}/items', [GalleryController::class, 'storeItem']);
     Route::delete('/gallery/items/{galleryItem}', [GalleryController::class, 'destroyItem']);
 
-    Route::get('/resources', [ResourceArchiveController::class, 'index']);
+    Route::get('/resources', [ResourceArchiveController::class, 'adminIndex']);
     Route::post('/resources', [ResourceArchiveController::class, 'store']);
+    Route::get('/documents', [DocumentController::class, 'index']);
+    Route::post('/documents', [DocumentController::class, 'store']);
+    Route::post('/documents/{document}', [DocumentController::class, 'update']);
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy']);
     Route::put('/resources/{resource}', [ResourceArchiveController::class, 'update']);
     Route::delete('/resources/{resource}', [ResourceArchiveController::class, 'destroy']);
 

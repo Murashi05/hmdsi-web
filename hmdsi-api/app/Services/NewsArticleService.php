@@ -20,6 +20,11 @@ class NewsArticleService
         );
     }
 
+    public function adminPaginate(array $filters, int $perPage = 20): LengthAwarePaginator
+    {
+        return $this->articles->paginate($this->articles->adminQuery($filters), $perPage);
+    }
+
     public function findPublishedBySlug(string $slug): NewsArticle
     {
         $article = $this->articles->findPublishedBySlug($slug);

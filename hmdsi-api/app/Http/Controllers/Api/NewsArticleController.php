@@ -26,6 +26,12 @@ class NewsArticleController extends Controller
         return $this->paginated($paginator, 'OK', NewsArticleResource::class);
     }
 
+    public function adminIndex(Request $request): JsonResponse
+    {
+        $paginator=$this->articles->adminPaginate($request->only(['category','status']),$request->integer('per_page',20));
+        return $this->paginated($paginator,'OK',NewsArticleResource::class);
+    }
+
     public function show(string $slug): JsonResponse
     {
         return $this->success(new NewsArticleResource($this->articles->findPublishedBySlug($slug)));

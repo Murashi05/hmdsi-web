@@ -37,6 +37,7 @@ class DepartmentService
 
     public function create(array $data): Department
     {
+        $data['period_id'] ??= $this->periods->findActive()?->id;
         return $this->departments->create($data);
     }
 

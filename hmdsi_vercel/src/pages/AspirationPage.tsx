@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Helmet } from 'react-helmet-async';
@@ -21,7 +23,7 @@ const STATUS_CONFIG: Record<string, { label: string; icon: any; color: string; b
   rejected: { label: 'Rejected', icon: XCircle, color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/30' },
 };
 
-const Section = ({ children, className = '', id = '' }: { children: React.ReactNode; className?: string; id?: string }) => (
+const Section = ({ children, className = '', id = '' }: { children: ReactNode; className?: string; id?: string }) => (
   <section id={id} className={`py-20 md:py-32 ${className}`}>{children}</section>
 );
 

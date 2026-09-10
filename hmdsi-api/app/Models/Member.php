@@ -40,6 +40,11 @@ class Member extends Model
         return $this->hasMany(ManagementStructure::class);
     }
 
+    public function activeManagementStructures(): HasMany
+    {
+        return $this->managementStructures()->where('is_active', true);
+    }
+
     // ─── Scopes ───────────────────────────────────────────────────────────────
 
     public function scopeByBatch($query, int $year)

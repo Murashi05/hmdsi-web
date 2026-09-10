@@ -22,6 +22,7 @@ export interface Period {
   end_date: string;
   is_active: boolean;
   theme: string | null;
+  cabinet_name?: string | null;
 }
 
 export interface Department {
@@ -67,7 +68,10 @@ export interface Member {
   linkedin_url: string | null;
   instagram_handle: string | null;
   bio: string | null;
+  management_assignments?: ManagementAssignment[];
 }
+
+export interface ManagementAssignment { id:number; period_id:number; is_active:boolean; role:ManagementRole; department:{id:number;name:string;slug:string;type:Department['type']}|null; }
 
 export interface ManagementRole {
   id: number;
@@ -145,6 +149,8 @@ export interface GalleryEvent {
   items_count?: number;
   items?: GalleryItem[];
 }
+
+export interface DocumentRecord { id:number; period_id:number|null; department_id:number|null; title:string; slug:string; description:string|null; file_url:string; file_type:string|null; file_size_kb:number; category:string; document_type:string|null; is_published:boolean; download_count:number; period?:Period; department?:Department; }
 
 export interface ArchiveResource {
   id: number;

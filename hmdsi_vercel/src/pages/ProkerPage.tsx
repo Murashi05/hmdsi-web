@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -15,7 +17,7 @@ const STATUS_CONFIG = {
   cancelled: { label: 'Cancelled', icon: XCircle, color: 'text-red-400 bg-red-400/10', borderColor: 'border-red-400/20' },
 } as const;
 
-const Section = ({ children, className = '', id = '' }: { children: React.ReactNode; className?: string; id?: string }) => (
+const Section = ({ children, className = '', id = '' }: { children: ReactNode; className?: string; id?: string }) => (
   <section id={id} className={`py-20 md:py-32 ${className}`}>{children}</section>
 );
 
@@ -91,7 +93,7 @@ export default function ProkerPage() {
   const { data: programs, isLoading } = useWorkPrograms({
     status: statusFilter || undefined,
     department_slug: deptFilter || undefined,
-    is_highlight: false,
+    is_highlight: undefined,
     per_page: 12,
   });
 
@@ -168,7 +170,7 @@ export default function ProkerPage() {
             <>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {programs.items.map((program: any) => (
-                  <ProgramCard key={program.id} program={program} />
+                  <ProgramCard program={program} />
                 ))}
               </div>
               {programs.pagination && programs.pagination.last_page > 1 && (

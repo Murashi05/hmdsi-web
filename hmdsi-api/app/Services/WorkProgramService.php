@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\WorkProgram;
+use App\Models\Period;
+use App\Models\Department;
 use App\Repositories\WorkProgramRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class WorkProgramService
 {
@@ -38,6 +41,8 @@ class WorkProgramService
 
     public function create(array $data): WorkProgram
     {
+        $data['period_id'] ??= Period::active()->value('id');
+        $this->assertDepartmentMatchesPeriod($data['department_id'] ?? null, $data['period_id'] ?? null);
         $tags = $data['tags'] ?? [];
         unset($data['tags']);
 
@@ -53,6 +58,9 @@ class WorkProgramService
         $tags = $data['tags'] ?? null;
         unset($data['tags']);
 
+        if (array_key_exists('department_id', $data)) {
+            $this->assertDepartmentMatchesPeriod($data['department_id'] ?? null, $data['period_id'] ?? $program->period_id);
+        }
         $program = $this->workPrograms->update($program, $data);
 
         if (is_array($tags)) {
@@ -65,6 +73,17 @@ class WorkProgramService
     public function delete(WorkProgram $program): bool
     {
         return $this->workPrograms->delete($program);
+    }
+
+    private function assertDepartmentMatchesPeriod(?int $departmentId, ?int $periodId): void
+    {
+        if (!$departmentId || !$periodId) {
+            throw ValidationException::withMessages(['department_id' => 'Departemen dan periode wajib ditentukan.']);
+        }
+        $department = Department::find($departmentId);
+        if (!$department || (int) $department->period_id !== (int) $periodId) {
+            throw ValidationException::withMessages(['department_id' => 'Departemen harus berasal dari periode yang dipilih.']);
+        }
     }
 
     private function syncTags(WorkProgram $program, array $tags): void

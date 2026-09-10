@@ -16,7 +16,10 @@ class StoreMemberRequest extends FormRequest
         return [
             'full_name' => ['required', 'string', 'max:150'],
             'student_id' => ['required', 'string', 'max:20', 'unique:members,student_id'],
-            'study_program' => ['required', 'string', 'max:100'],
+            'study_program' => ['sometimes', 'string', 'max:100'],
+            'period_id' => ['nullable', 'integer', 'exists:periods,id'],
+            'management_role_id' => ['nullable', 'integer', 'exists:management_roles,id'],
+            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
             'batch_year' => ['required', 'integer', 'min:2000'],
             'email' => ['nullable', 'email', 'max:150'],
             'phone' => ['nullable', 'string', 'max:30'],
